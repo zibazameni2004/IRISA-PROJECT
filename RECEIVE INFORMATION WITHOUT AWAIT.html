@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+ #matn{
+    color: rgb(0, 111, 231);
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  button{
+    width: 150px;
+    height: 50px;
+    color: darkmagenta;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: lightblue;
+  }
+
+  #z {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 50px;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  .modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+  }
+
+  @keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+  }
+
+  .close {
+    width: 120px;
+    height: 50px;
+    color: darkmagenta;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: lightblue;
+    float: right;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .modal-header {
+    padding: 2px 16px;
+    color: rgb(0, 0, 0);
+  }
+
+  .modal-body {padding: 2px 16px;}
+
+  .modal-footer {
+    padding: 2px 16px;
+    color: rgb(0, 0, 0);
+  }
+
+  .divs{
+    border: 1px solid #000;
+    padding: 10px; 
+    margin-bottom: 10px; 
+  }
+
+</style>
+  
+</head>
+<body>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <button class="close" onclick="closeModal()">بستن</button>
+            <div class="modal-body" id="divmodal">
+                <p id="ui"></p>
+                <p id="id"></p>
+                <p id="title"></p>
+                <p id="body"></p>
+            </div>
+        </div>
+    </div>
+    
+<p id="matn">...در حال دریافت اطلاعات</p>
+<div id="z">
+    <button id="btn" onclick="btnclick()">دریافت اطلاعات</button>
+    <button id="close" onclick="myfuncton()">بستن</button>
+</div>
+<div id="container"></div>
+
+<script>
+function btnclick(){
+document.getElementById('matn').style.display="none";
+var xhttp=new XMLHttpRequest();
+var container=document.getElementById('container');
+xhttp.onreadystatechange=function(){
+if(xhttp.readyState==4 && xhttp.status==200){
+var ourdata=JSON.parse(xhttp.responseText);
+var div1=document.createElement('div');
+for(var i=0;i<ourdata.length;i++){
+
+
+    var div2=document.createElement('div');
+    div2.className="divs";
+    var bt=document.createElement('button');
+    bt.textContent="مشاهده جزییات بیشتر";
+bt.onclick=moreinformation(ourdata[i].id);
+div2.innerHTML="USER ID:" + ourdata[i].userId + "<br>" + "ID:" + ourdata[i].id + "<br>" + "TITLE:" + ourdata[i].title + "<br>" + "BODY:" + ourdata[i].body + "<br>";
+div2.appendChild(bt);
+div1.appendChild(div2);
+}
+
+container.appendChild(div1);
+}
+
+}
+xhttp.open("GET","https://jsonplaceholder.typicode.com/posts",true);
+xhttp.send();
+
+}
+function moreinformation(userId){
+
+    return function(){
+      
+        getDetails(userId);
+    };
+}
+function getDetails(userId){
+fetch("https://jsonplaceholder.typicode.com/posts/"+userId)
+.then(Response => Response.json())
+.then(data=>{
+showmodal(data);
+
+})
+.catch(error => {
+            console.error('Error:', error);
+        });
+
+
+
+}
+
+function showmodal(data) {
+    var myModal=document.getElementById('myModal').style.display="block";
+var ui=document.getElementById('ui');
+var id=document.getElementById('id');
+var title=document.getElementById('title');
+var body=document.getElementById('body');
+
+ui.textContent="USER ID:"+data.userId;
+id.textContent="ID:"+data.id;
+title.textContent="TITLE:"+data.title;
+body.textContent="BODY:"+data.body;
+
+
+}
+
+function myfuncton() {
+    container.innerHTML = "";
+}
+
+function closeModal(){
+
+
+    myModal.style.display="none";
+}
+
+
+
+
+</script>
+</body>
+</html>

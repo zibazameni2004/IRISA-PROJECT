@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+
+
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  padding-top: 100px; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto;
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4);
+}
+
+
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+
+@-webkit-keyframes animatetop {
+  from {top:-300px; opacity:0} 
+  to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+  from {top:-300px; opacity:0}
+  to {top:0; opacity:1}
+}
+
+
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  color: rgb(0, 0, 0);
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+  padding: 2px 16px;
+  color: rgb(0, 0, 0);
+}
+
+
+</style>
+</head>
+<body>
+
+
+
+<button id="myBtn" >افزودن رنگ</button>
+
+
+<div id="myModal" class="modal">
+
+
+  <div class="modal-content">
+    <div class="modal-header" style="text-align: right;">
+      <span class="close">&times;</span>
+      <button id="exit" style="text-align: left;margin: auto;">بستن</button>
+      <h2>افزودن رنگ</h2>
+    
+    </div>
+    <div class="modal-body"  style="text-align: right;">
+        <div>
+      <label for="colorname">نام رنگ</label>
+      
+      <input  id="colorname"></input>
+      <p id="cn" style="color: #000;"></p>
+    </div>
+    <br>
+    
+    <div  style="text-align: right;">
+      <label for="colorcode">کد رنگ</label>
+      <input  id="colorcode"></input>
+      <p id="cc" style="color: #000;"></p>
+    </div>
+    </div>
+    <div class="modal-footer">
+        <br>
+<div  style="text-align: right;">
+    <button id="afzodan" >افزودن</button>
+
+</div>
+  </div>
+
+</div>
+
+<script>
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("myBtn");
+var span = document.getElementsByClassName("close")[0];
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+
+
+var increase=document.getElementById('afzodan');
+increase.onclick=function(){
+var colorname=document.getElementById('colorname').value;
+var colorcode=document.getElementById('colorcode').value;
+var cc=document.getElementById('cc');
+var cn=document.getElementById('cn');
+
+
+if(colorcode=="" ||colorname==""){
+cn.innerText="";
+cc.innerText="لطفا نام و کد رنگ را وارد بفرمایید";
+return;
+
+}
+
+if(!/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(colorcode)){
+cn.innerText="";
+cc.innerText="لطفا کد رنگ را به صورت هگزادسیمال وارد بفرمایید";
+return;
+}
+cn.innerText="";
+cc.innerText="";
+
+modal.style.display = "none";
+
+
+var increase1=document. createElement("button");
+increase1.style.backgroundColor=colorcode;
+increase1.innerHTML=colorname;
+
+increase1.onclick=function(){
+document.body.style.backgroundColor=colorcode;
+ 
+}
+document. body. appendChild(increase1);
+
+}
+
+var exit=document.getElementById('exit')
+exit.onclick=function(){
+
+  modal.style.display="none";
+}
+
+</script>
+
+</body>
+</html>

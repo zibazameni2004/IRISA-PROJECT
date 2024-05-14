@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  #matn{
+    color: rgb(0, 111, 231);
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  button{
+    width: 150px;
+    height: 50px;
+    color: darkmagenta;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: lightblue;
+  }
+
+  #z {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 50px;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  .modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+  }
+
+  @keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+  }
+
+  .close {
+    width: 120px;
+    height: 50px;
+    color: darkmagenta;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: lightblue;
+    float: right;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .modal-header {
+    padding: 2px 16px;
+    color: rgb(0, 0, 0);
+  }
+
+  .modal-body {padding: 2px 16px;}
+
+  .modal-footer {
+    padding: 2px 16px;
+    color: rgb(0, 0, 0);
+  }
+
+  .divs{
+    border: 1px solid #000;
+    padding: 10px; 
+    margin-bottom: 10px; 
+  }
+</style>
+</head>
+<body>
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <button class="close" onclick="closeModal()">بستن</button>
+        <div class="modal-body" id="divmodal">
+        </div>
+    </div>
+</div>
+
+<p id="matn">...در حال دریافت اطلاعات</p>
+<div id="z">
+    <button id="btn" onclick="btnclick()">دریافت اطلاعات</button>
+    <button id="close" onclick="myfuncton()">بستن</button>
+</div>
+<div id="container"></div>
+
+<script>
+async function btnclick() {
+    document.getElementById('matn').style.display = "none";
+    var container = document.getElementById('container');
+
+    try {
+        const responses = await Promise.all([
+            fetchData("https://jsonplaceholder.typicode.com/posts"),
+            fetchData("https://jsonplaceholder.typicode.com/users"),
+            fetchData("https://jsonplaceholder.typicode.com/comments")
+        ]);
+
+        const [posts, users, comments] = responses;
+
+        var div1 = document.createElement('div');
+        for (let i = 0; i < posts.length; i++) {
+            var div2 = document.createElement("div");
+            div2.className="divs";
+            var bt = document.createElement("button");
+            bt.textContent = "مشاهده جزییات بیشتر";
+            bt.onclick = showModal.bind(null, posts[i]);
+            div2.innerHTML = "USER ID:" + posts[i].userId + "<br>" + "ID:" + posts[i].id + "<br>" + "TITLE:" + posts[i].title + "<br>" + "BODY:" + posts[i].body + "<br>";
+            div2.appendChild(bt);
+            div1.appendChild(div2);
+        }
+        container.appendChild(div1);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
+async function fetchData(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error('شبکه ضعیف است');
+    }
+    return response.json();
+}
+
+function showModal(data) {
+    var modal = document.getElementById("myModal");
+    var divmodal = document.getElementById("divmodal");
+
+    divmodal.innerHTML = "USER ID: " + data.userId + "<br>" + "ID: " + data.id + "<br>" + "TITLE: " + data.title + "<br>" + "BODY: " + data.body + "<br>";
+    modal.style.display = "block";
+}
+
+function closeModal() {
+    var modal = document.getElementById("myModal");
+    modal.style.display = "none";
+}
+
+function myfuncton() {
+    container.innerHTML = "";
+}
+</script>
+</body>
+</html>
